@@ -1,3 +1,6 @@
+import { Header } from "@/components/header";
+import { Shell } from "@/components/shells/shell";
+import Container from "@/components/ui/container";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,8 +10,14 @@ export const metadata: Metadata = {
 
 export default function CoinsPage() {
   return (
-    <div>
-      <h1>List of coins</h1>
-    </div>
+    <Shell>
+      <Container>
+        <Header
+          title="Cryptocurrency Prices by Market Cap"
+          description="The global cryptocurrency market cap today ..."
+          size="sm"
+        />
+      </Container>
+    </Shell>
   );
 }
