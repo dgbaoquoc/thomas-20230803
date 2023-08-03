@@ -1,4 +1,4 @@
-import Navbar from "@/components/layouts/navbar";
+import { SiteHeader } from "@/components/layouts/site-header";
 
 interface CoinsLayoutProps {
   children: React.ReactNode;
@@ -7,7 +7,7 @@ interface CoinsLayoutProps {
 export default function CoinsLayout({ children }: CoinsLayoutProps) {
   return (
     <div className="relative flex min-h-screen flex-col">
-      <Navbar />
+      <SiteHeader />
       <main>{children}</main>
     </div>
   );
