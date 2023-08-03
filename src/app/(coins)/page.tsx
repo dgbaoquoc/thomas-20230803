@@ -1,4 +1,5 @@
 import { Header } from "@/components/header";
+import CoinsTableShell from "@/components/shells/coins-table-shell";
 import { Shell } from "@/components/shells/shell";
 import Container from "@/components/ui/container";
 import { type Metadata } from "next";
@@ -16,6 +17,10 @@ export default function CoinsPage() {
           title="Cryptocurrency Prices by Market Cap"
           description="The global cryptocurrency market cap today ..."
           size="sm"
+        />
+        <CoinsTableShell
+          data={[]}
+          pageCount={10}
         />
       </Container>
     </Shell>
