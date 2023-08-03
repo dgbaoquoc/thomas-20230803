@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Rakkar | Coins",
   description: "Search for your looking coin in the market.",
 };
-export default function Home() {
+
+export default function CoinsPage() {
   return (
-    <main>
-      <Button>Hello world</Button>
-    </main>
+    <div>
+      <h1>List of coins</h1>
+    </div>
   );
 }
