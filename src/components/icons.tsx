@@ -64,8 +64,8 @@ export const Icons = {
           y2="5.74334"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.46" stop-color="#9A3366" />
-          <stop offset="0.99" stop-color="#D73995" />
+          <stop offset="0.46" stopColor="#9A3366" />
+          <stop offset="0.99" stopColor="#D73995" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_88_2505"
@@ -75,8 +75,8 @@ export const Icons = {
           y2="13.3363"
           gradientUnits="userSpaceOnUse"
         >
-          <stop offset="0.33" stop-color="#25397C" />
-          <stop offset="0.99" stop-color="#9A3366" />
+          <stop offset="0.33" stopColor="#25397C" />
+          <stop offset="0.99" stopColor="#9A3366" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_88_2505"
@@ -86,8 +86,8 @@ export const Icons = {
           y2="12.5507"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#25397C" />
-          <stop offset="0.99" stop-color="#9A3366" />
+          <stop stopColor="#25397C" />
+          <stop offset="0.99" stopColor="#9A3366" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_88_2505"
@@ -97,8 +97,8 @@ export const Icons = {
           y2="16.9219"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#262262" />
-          <stop offset="0.57" stop-color="#253879" />
+          <stop stopColor="#262262" />
+          <stop offset="0.57" stopColor="#253879" />
         </linearGradient>
       </defs>
     </svg>

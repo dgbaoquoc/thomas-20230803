@@ -2,6 +2,7 @@ import { Header } from "@/components/header";
 import CoinsTableShell from "@/components/shells/coins-table-shell";
 import { Shell } from "@/components/shells/shell";
 import Container from "@/components/ui/container";
+import { mockCoins } from "@/mocks/coins";
 import { type Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -19,8 +20,9 @@ export default function CoinsPage() {
           size="sm"
         />
         <CoinsTableShell
-          data={[]}
-          pageCount={10}
+          // TODO: api for coin list
+          data={mockCoins}
+          pageCount={1}
         />
       </Container>
     </Shell>

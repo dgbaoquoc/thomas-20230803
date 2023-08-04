@@ -20,3 +20,10 @@ export function formatPrice(
     notation,
   }).format(Number(price))
 }
+
+export function formatPercentage(
+  price: number | string
+) {
+  const roundedNumber =  Number(price).toFixed(2);
+  return roundedNumber + "%";
+}
