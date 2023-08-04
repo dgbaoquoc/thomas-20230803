@@ -1,8 +1,9 @@
-import Link from "next/link";
-import Image from "next/image";
+import { Icons } from "@/components/icons";
 import Container from "@/components/ui/container";
-import { Icons } from "../icons";
-import NavbarActions from "../navbar-actions";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+
+const NavbarActionsClient = dynamic(() => import('@/components/navbar-actions'), { ssr: false })
 
 export function SiteHeader() {
   return (
@@ -13,8 +14,7 @@ export function SiteHeader() {
             <Icons.logo className="h-6 w-auto" aria-hidden="true" />
           </Link>
           <div className="ml-auto flex items-center gap-x-10">
-            <NavbarActions />
-            {/* <NavbarActions /> */}
+            <NavbarActionsClient />
           </div>
         </div>
       </Container>
