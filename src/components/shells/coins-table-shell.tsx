@@ -1,12 +1,13 @@
 "use client";
 
-import * as React from "react";
-import { type ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table/data-table";
-import { Coin } from "@/types/coin";
+import { Icons } from "@/components/icons";
 import { cn, formatPercentage, formatPrice } from "@/lib/utils";
+import { Coin } from "@/types/coin";
+import { type ColumnDef } from "@tanstack/react-table";
 import Image from "next/image";
 import Link from "next/link";
+import * as React from "react";
 import { Sparklines, SparklinesLine } from "react-sparklines";
 
 interface CoinsTableShellProps {
@@ -28,23 +29,28 @@ export default function CoinsTableShell({
         id: "index",
         header: "#",
         cell: ({ row }) => Number(row.id) + 1,
-        enableHiding: false
+        enableHiding: false,
       },
       {
         accessorKey: "id",
         header: "Coin",
         cell: ({ row }) => {
+          // error with the image is missing
           const { image, name, symbol } = row.original;
 
           return (
             <div className="flex items-center gap-x-2">
               <div className="relative h-6 w-6">
-                <Image
-                  fill
-                  src={image}
-                  alt={name}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
+                {image === "missing_large.png" ? (
+                  <Icons.coin className="h-6 w-6" />
+                ) : (
+                  <Image
+                    fill
+                    src={image}
+                    alt={name}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                )}
               </div>
               <Link
                 href={`/coins/${row.original.id}`}
@@ -58,7 +64,7 @@ export default function CoinsTableShell({
             </div>
           );
         },
-        enableHiding: false
+        enableHiding: false,
       },
       {
         id: "Price",
@@ -135,6 +141,7 @@ export default function CoinsTableShell({
         header: "Last 7 days",
         cell: ({ cell, row }) => (
           <Link href={`/coins/${row.original.id}?period=7d`}>
+            {!(cell.getValue() as { price: number[] }).price.length && "-"}
             <Sparklines
               data={(cell.getValue() as { price: number[] }).price}
               width={150}
@@ -143,9 +150,7 @@ export default function CoinsTableShell({
               <SparklinesLine
                 style={{ fill: "none" }}
                 color={
-                  Number(
-                    row.getValue("Price change in 7d")
-                  ) > 0
+                  Number(row.getValue("Price change in 7d")) > 0
                     ? "green"
                     : "red"
                 }
@@ -163,12 +168,6 @@ export default function CoinsTableShell({
       columns={columns}
       data={data}
       pageCount={pageCount}
-      // searchableColumns={[
-      //   {
-      //     id: "name",
-      //     title: "names",
-      //   },
-      // ]}
     />
   );
 }

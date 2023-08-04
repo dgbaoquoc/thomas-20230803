@@ -1,6 +1,7 @@
-import { Search, type LucideProps } from "lucide-react";
+import { Search, type LucideProps, Coins } from "lucide-react";
 
 export const Icons = {
+  coin: Coins,
   search: Search,
   logo: (props: LucideProps) => (
     <svg
