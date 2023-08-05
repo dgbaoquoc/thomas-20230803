@@ -1,15 +1,79 @@
-import { Coin } from "@/types/coin";
+"use client";
+
+import LineChart from "@/components/chart/line-chart";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import React from "react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { sortOptions } from "@/constants";
 import { formatDate, formatPrice } from "@/lib/utils";
+import { Coin } from "@/types/coin";
+import dayjs from "dayjs";
+import {
+  usePathname,
+  useRouter,
+  useSearchParams
+} from "next/navigation";
+import React from "react";
 
 interface OverviewContentProps {
   coin: Coin;
+  coinMarketPrices: Array<number[]>;
 }
 
-export default function OverviewContent({ coin }: OverviewContentProps) {
-  // store
+export default function OverviewContent({
+  coin,
+  coinMarketPrices,
+}: OverviewContentProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = React.useTransition();
+
+  
+  // Search params
+  const periodParm = searchParams?.get("period") ?? "1d";
+
+  // Create query string
+  const createQueryString = React.useCallback(
+    (params: Record<string, string | number | null>) => {
+      const newSearchParams = new URLSearchParams(searchParams?.toString());
+
+      for (const [key, value] of Object.entries(params)) {
+        if (value === null) {
+          newSearchParams.delete(key);
+        } else {
+          newSearchParams.set(key, String(value));
+        }
+      }
+
+      return newSearchParams.toString();
+    },
+    [searchParams]
+  );
+
+  // Period filter
+  const [period, setPeriod] = React.useState(periodParm);
+
+  React.useEffect(() => {
+    startTransition(() => {
+      router.push(
+        `${pathname}?${createQueryString({
+          period,
+        })}`
+      );
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period]);
+
+  // Coin market price chart data
+  const coinMarketPricesData = coinMarketPrices.map(([timestamp, price]) => ({
+    x: dayjs(timestamp).format("D MMM"),
+    y: price,
+  }));
+
+  const timestamps = coinMarketPricesData.map((entry) => entry.x);
+  const prices = coinMarketPricesData.map((entry) => entry.y);
+
   const tableData = React.useMemo(() => {
     return [
       {
@@ -18,7 +82,9 @@ export default function OverviewContent({ coin }: OverviewContentProps) {
       },
       {
         cell: "24h Low / 24h High",
-        value: `${formatPrice(coin.market_data.low_24h.usd)} / ${formatPrice(coin.market_data.high_24h.usd)}`,
+        value: `${formatPrice(coin.market_data.low_24h.usd)} / ${formatPrice(
+          coin.market_data.high_24h.usd
+        )}`,
       },
       {
         cell: "Market Cap Rank",
@@ -31,25 +97,95 @@ export default function OverviewContent({ coin }: OverviewContentProps) {
       {
         cell: "All-Time High",
         value: formatPrice(coin.market_data.ath.usd),
-        subValue: formatDate(coin.market_data.ath_date.usd)
+        subValue: formatDate(coin.market_data.ath_date.usd),
       },
       {
         cell: "All-Time Low",
         value: formatPrice(coin.market_data.atl.usd),
-        subValue: formatDate(coin.market_data.ath_date.usd)
+        subValue: formatDate(coin.market_data.ath_date.usd),
       },
     ];
   }, [coin]);
+
+
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div className="col-span-2">
         <div className="flex flex-col gap-y-2 lg:gap-y-4">
-        <h2 className="text-2xl lg:text-xl">{coin.name} Price Chart</h2>
+          <h2 className="text-2xl lg:text-xl">{coin.name} Price Chart</h2>
 
+          <div className="flex flex-col gap-y-2">
+            {/* Toolbar */}
+            <Tabs defaultValue={period} className="w-[400px]">
+              <TabsList>
+                {sortOptions.map((option) => (
+                  <TabsTrigger
+                    key={option.value}
+                    value={option.value}
+                    disabled={isPending}
+                    onClick={() => setPeriod(option.value)}
+                  >
+                    {option.title}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+
+            <div>
+              <LineChart
+                type="line"
+                data={{
+                  labels: timestamps,
+                  datasets: [
+                    {
+                      label: "Price",
+                      data: prices,
+                      fill: false,
+                      borderColor:
+                        coin.market_data.price_change_percentage_24h < 0
+                          ? "red"
+                          : "green",
+                      pointRadius: 0,
+                    },
+                  ],
+                }}
+                options={{
+                  scales: {
+                    x: {
+                      time: {
+                        unit: "day",
+                        tooltipFormat: "D MMM",
+                      },
+                      ticks: {
+                        source: "data",
+                      },
+                      grid: {
+                        display: false,
+                      },
+                    },
+                    y: {
+                      grid: {
+                        display: true,
+                      },
+                    },
+                  },
+
+                  plugins: {
+                    tooltip: {
+                      intersect: false,
+                    },
+                    legend: {
+                      display: false,
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* side bar */}
       <div className="col-span-1">
         <Card className="bg-gray-100">
           <CardHeader>
@@ -61,8 +197,13 @@ export default function OverviewContent({ coin }: OverviewContentProps) {
                 {tableData.map((row, index) => (
                   <TableRow key={index}>
                     <TableCell>{row.cell}</TableCell>
-                    <TableCell className="font-semibold">{row.value} <br />
-                    {row.subValue && <span className="text-sm font-normal">({row.subValue})</span>}
+                    <TableCell className="font-semibold">
+                      {row.value} <br />
+                      {row.subValue && (
+                        <span className="text-sm font-normal">
+                          ({row.subValue})
+                        </span>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

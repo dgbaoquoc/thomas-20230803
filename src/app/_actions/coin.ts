@@ -1,4 +1,4 @@
-import { getCoinsSchema } from "@/lib/validations/coin";
+import { getCoinsSchema, getCoinMarketChartSchema } from "@/lib/validations/coin";
 import { Coin } from "@/types/coin";
 import { z } from "zod";
 
@@ -32,3 +32,15 @@ export async function getCoin(id: string) {
   } as Coin;
 }
 
+export async function getCoinMarketChart(input: z.infer<typeof getCoinMarketChartSchema>) {
+  const { id, days } = input; 
+  if(id.length === 0) return null;
+  const response = await fetch(`${apiUrl}/coins/${id}/market_chart?vs_currency=usd&days=${days}&precision=2
+  `)
+
+  const coinMarketData = await response.json();
+  const coinMarketPrice = coinMarketData.prices
+
+  return coinMarketPrice as Array<number[]>
+
+}

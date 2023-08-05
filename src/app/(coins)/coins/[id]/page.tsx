@@ -1,4 +1,4 @@
-import { getCoin } from "@/app/_actions/coin";
+import { getCoin, getCoinMarketChart } from "@/app/_actions/coin";
 import { Breadcrumbs } from "@/components/pagers/breadcrumbs";
 import { Shell } from "@/components/shells/shell";
 import Container from "@/components/ui/container";
@@ -20,12 +20,27 @@ interface CoinPageProps {
   params: {
     id: string;
   };
+  searchParams: {
+    [key: string]: string | string[] | undefined;
+  };
 }
 
-export default async function CoinPage({ params }: CoinPageProps) {
+export default async function CoinPage({
+  params,
+  searchParams,
+}: CoinPageProps) {
+  const { period } = searchParams;
+
   const coin = await getCoin(params.id);
 
   if (!coin) notFound();
+
+  // chart data
+  const days = typeof period === "string" ? Number(period.replace("d", "")) : 1;
+  const coinMarketPrices = await getCoinMarketChart({
+    id: coin.id,
+    days,
+  });
 
   return (
     <Shell>
@@ -52,7 +67,10 @@ export default async function CoinPage({ params }: CoinPageProps) {
               ))}
             </TabsList>
             <TabsContent value="overview">
-              <OverviewContent coin={coin} />
+              <OverviewContent
+                coin={coin}
+                coinMarketPrices={coinMarketPrices ?? []}
+              />
             </TabsContent>
             <TabsContent value="market">Market</TabsContent>
             <TabsContent value="about">About</TabsContent>
