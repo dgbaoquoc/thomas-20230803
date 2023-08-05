@@ -1,6 +1,8 @@
-import { Search, type LucideProps, Coins } from "lucide-react";
+import { Search, type LucideProps, Coins, ChevronUp, ChevronDown } from "lucide-react";
 
 export const Icons = {
+  chevronUp: ChevronUp,
+  chevronDown: ChevronDown,
   coin: Coins,
   search: Search,
   logo: (props: LucideProps) => (

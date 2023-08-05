@@ -26,9 +26,58 @@ export interface Coin {
   roi: object | null;
   last_updated: string;
   sparkline_in_7d: {
-    price: number[]
-  }
+    price: number[];
+  };
   price_change_percentage_1h_in_currency: number;
   price_change_percentage_24h_in_currency: number;
-  price_change_percentage_7d_in_currency: number
+  price_change_percentage_7d_in_currency: number;
+  market_data: {
+    market_cap_rank: number;
+    current_price: {
+      usd: number;
+    };
+    market_cap: {
+      usd: number;
+    };
+    total_volume: {
+      usd: number;
+    };
+    low_24h: {
+      usd: number
+    };
+    high_24h: {
+      usd: number
+    };
+    low_7d: {
+      usd: number
+    };
+    high_7d: {
+      usd: number
+    };
+    ath: {
+      usd: number;
+    }
+    ath_date: {
+      usd: string
+    }
+    atl: {
+      usd: number;
+    }
+    atl_string: {
+      usd: Date
+    }
+    price_change_24h: number;
+    price_change_percentage_24h: number;
+    price_change_percentage_7d: number;
+    price_change_percentage_14d: number;
+    price_change_percentage_30d: number;
+    price_change_percentage_60d: number;
+    price_change_percentage_200d: number;
+    price_change_percentage_1y: number;
+  };
+}
+
+export type CoinTab = {
+  title: string;
+  value: "overview" | "market" | "about";
 }

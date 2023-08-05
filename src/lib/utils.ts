@@ -1,12 +1,13 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
- 
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import dayjs from "dayjs";
+
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export function isMacOs(){
-  return window.navigator.userAgent.includes('Mac');
+export function isMacOs() {
+  return window.navigator.userAgent.includes("Mac");
 }
 
 export function formatPrice(
@@ -18,12 +19,18 @@ export function formatPrice(
     style: "currency",
     currency,
     notation,
-  }).format(Number(price))
+  }).format(Number(price));
 }
 
-export function formatPercentage(
-  price: number | string
-) {
-  const roundedNumber =  Number(price).toFixed(2);
+export function formatPercentage(price: number | string) {
+  const roundedNumber = Number(price).toFixed(2);
   return roundedNumber + "%";
+}
+
+export function formatDate(date: Date | string) {
+  return dayjs(date).format("MMMM D, YYYY");
+}
+
+export function truncate(str: string, length: number) {
+  return str.length > length ? `${str.substring(0, length)}...` : str;
 }

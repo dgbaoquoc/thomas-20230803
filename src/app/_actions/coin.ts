@@ -19,3 +19,16 @@ export async function getCoins(input: z.infer<typeof getCoinsSchema>) {
     coins,
   };
 }
+
+export async function getCoin(id: string) {
+  if(id.length === 0) return null;
+
+  const coinResponse = await fetch(`${apiUrl}/coins/${id}?localization=false&tickers=false&community_data=false&developer_data=false`);
+  const coin = (await coinResponse.json());
+
+  return {
+    ...coin,
+    image: coin.image.small ?? "missing_large.png",
+  } as Coin;
+}
+
