@@ -42,5 +42,15 @@ export async function getCoinMarketChart(input: z.infer<typeof getCoinMarketChar
   const coinMarketPrice = coinMarketData.prices
 
   return coinMarketPrice as Array<number[]>
+}
 
+export async function getCoinMartChartOhlc(input: z.infer<typeof getCoinMarketChartSchema>) {
+  const { id, days } = input; 
+  if(id.length === 0) return null;
+  const response = await fetch(`${apiUrl}/coins/${id}/ohlc?vs_currency=usd&days=${days}&precision=2
+  `)
+
+  const coinMarketData = await response.json();
+
+  return coinMarketData as Array<number[]>
 }

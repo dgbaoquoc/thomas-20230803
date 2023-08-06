@@ -1,6 +1,8 @@
-import { Search, type LucideProps, Coins, ChevronUp, ChevronDown } from "lucide-react";
+import { Search, type LucideProps, Coins, ChevronUp, ChevronDown, LineChart, CandlestickChart } from "lucide-react";
 
 export const Icons = {
+  lineChart: LineChart,
+  candleStickChart: CandlestickChart,
   chevronUp: ChevronUp,
   chevronDown: ChevronDown,
   coin: Coins,

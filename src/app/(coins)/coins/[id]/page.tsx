@@ -1,4 +1,4 @@
-import { getCoin, getCoinMarketChart } from "@/app/_actions/coin";
+import { getCoin, getCoinMarketChart, getCoinMartChartOhlc } from "@/app/_actions/coin";
 import { Breadcrumbs } from "@/components/pagers/breadcrumbs";
 import { Shell } from "@/components/shells/shell";
 import Container from "@/components/ui/container";
@@ -42,6 +42,11 @@ export default async function CoinPage({
     days,
   });
 
+  const coinMarketPricesOhlc = await getCoinMartChartOhlc({
+    id: coin.id,
+    days,
+  });
+
   return (
     <Shell>
       <Container>
@@ -70,6 +75,7 @@ export default async function CoinPage({
               <OverviewContent
                 coin={coin}
                 coinMarketPrices={coinMarketPrices ?? []}
+                coinMarketPricesOhlc={coinMarketPricesOhlc ?? []}
               />
             </TabsContent>
             <TabsContent value="market">Market</TabsContent>

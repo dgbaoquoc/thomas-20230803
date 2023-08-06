@@ -1,35 +1,34 @@
 "use client";
 
 import LineChart from "@/components/chart/line-chart";
+import OhlcChart from "@/components/chart/ohlc-chart";
+import { Icons } from "@/components/icons";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { sortOptions } from "@/constants";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Coin } from "@/types/coin";
 import dayjs from "dayjs";
-import {
-  usePathname,
-  useRouter,
-  useSearchParams
-} from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 interface OverviewContentProps {
   coin: Coin;
   coinMarketPrices: Array<number[]>;
+  coinMarketPricesOhlc: Array<number[]>;
 }
 
 export default function OverviewContent({
   coin,
   coinMarketPrices,
+  coinMarketPricesOhlc
 }: OverviewContentProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = React.useTransition();
 
-  
   // Search params
   const periodParm = searchParams?.get("period") ?? "1d";
 
@@ -74,6 +73,12 @@ export default function OverviewContent({
   const timestamps = coinMarketPricesData.map((entry) => entry.x);
   const prices = coinMarketPricesData.map((entry) => entry.y);
 
+  // Coin ohlc chart data
+  const coinMarketPricesOhlcData = coinMarketPricesOhlc.map(([timestamp, open, high, low, close]) => ({
+    x: new Date(timestamp),
+    y: [open, high, low, close],
+  }));
+
   const tableData = React.useMemo(() => {
     return [
       {
@@ -107,81 +112,118 @@ export default function OverviewContent({
     ];
   }, [coin]);
 
-
-
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div className="col-span-2">
         <div className="flex flex-col gap-y-2 lg:gap-y-4">
           <h2 className="text-2xl lg:text-xl">{coin.name} Price Chart</h2>
 
-          <div className="flex flex-col gap-y-2">
-            {/* Toolbar */}
-            <Tabs defaultValue={period} className="w-[400px]">
-              <TabsList>
-                {sortOptions.map((option) => (
-                  <TabsTrigger
-                    key={option.value}
-                    value={option.value}
-                    disabled={isPending}
-                    onClick={() => setPeriod(option.value)}
-                  >
-                    {option.title}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+          <div>
+            <Tabs defaultValue="line">
+              <TabsList className="flex justify-between">
+                <div>
+                <TabsTrigger value="line">
+                  <Icons.lineChart className="h-4 w-4" />
+                </TabsTrigger>
+                <TabsTrigger value="ohlc">
+                  <Icons.candleStickChart className="h-4 w-4" />
+                </TabsTrigger>
+                </div>
+                <div>
+                <Tabs defaultValue={period}>
+                    <TabsList>
+                      {sortOptions.map((option) => (
+                        <TabsTrigger
+                          key={option.value}
+                          value={option.value}
+                          disabled={isPending}
+                          onClick={() => setPeriod(option.value)}
+                        >
+                          {option.title}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
             </Tabs>
-
-            <div>
+                </div>
+                
+              </TabsList>
+              <TabsContent value="line">
               <LineChart
-                type="line"
-                data={{
-                  labels: timestamps,
-                  datasets: [
-                    {
-                      label: "Price",
-                      data: prices,
-                      fill: false,
-                      borderColor:
-                        coin.market_data.price_change_percentage_24h < 0
-                          ? "red"
-                          : "green",
-                      pointRadius: 0,
-                    },
-                  ],
-                }}
-                options={{
-                  scales: {
-                    x: {
-                      time: {
-                        unit: "day",
-                        tooltipFormat: "D MMM",
+                    type="line"
+                    data={{
+                      labels: timestamps,
+                      datasets: [
+                        {
+                          label: "Price",
+                          data: prices,
+                          fill: false,
+                          borderColor:
+                            coin.market_data.price_change_percentage_24h < 0
+                              ? "red"
+                              : "green",
+                          pointRadius: 0,
+                        },
+                      ],
+                    }}
+                    options={{
+                      scales: {
+                        x: {
+                          time: {
+                            unit: "day",
+                            tooltipFormat: "D MMM",
+                          },
+                          ticks: {
+                            source: "data",
+                          },
+                          grid: {
+                            display: false,
+                          },
+                        },
+                        y: {
+                          grid: {
+                            display: true,
+                          },
+                        },
                       },
-                      ticks: {
-                        source: "data",
-                      },
-                      grid: {
-                        display: false,
-                      },
-                    },
-                    y: {
-                      grid: {
-                        display: true,
-                      },
-                    },
-                  },
 
-                  plugins: {
-                    tooltip: {
-                      intersect: false,
+                      plugins: {
+                        tooltip: {
+                          intersect: false,
+                        },
+                        legend: {
+                          display: false,
+                        },
+                      },
+                    }}
+                  />
+              </TabsContent>
+              <TabsContent value="ohlc">
+                <OhlcChart
+                  series={[
+                    {
+                      data: coinMarketPricesOhlcData
+                    }
+                  ]}
+                  options={{
+                    chart: {
+                      type: 'candlestick',
                     },
-                    legend: {
-                      display: false,
+                    // title: {
+                    //   text: ""
+                    // },
+                    xaxis: {
+                      type: 'datetime'
                     },
-                  },
-                }}
-              />
-            </div>
+                    yaxis: {
+                      tooltip: {
+                        enabled: true
+                      }
+                    }
+                  }}
+                />
+              </TabsContent>
+            </Tabs>
+            
           </div>
         </div>
       </div>
