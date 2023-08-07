@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/accordion";
 import Container from "@/components/ui/container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ResolvingMetadata, type Metadata } from "next";
+import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { tabs } from "@/constants";
@@ -32,13 +32,9 @@ interface CoinPageProps {
 }
 
 export async function generateMetadata(
-  { params, searchParams }: CoinPageProps,
-  parent?: ResolvingMetadata
+  { params }: CoinPageProps,
 ): Promise<Metadata> {
   const coin = await getCoin(params.id);
-
-  // optionally access and extend (rather than replace) parent metadata
-  const previousImages = (await parent)?.openGraph?.images || [];
 
   return {
     title: `${coin?.name} | Information`,
