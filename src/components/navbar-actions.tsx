@@ -23,6 +23,7 @@ import {
 import { TrendingCoin } from "@/types/coin";
 import { Skeleton } from "./ui/skeleton";
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export default function NavbarActions() {
   const router = useRouter();
@@ -75,21 +76,27 @@ export default function NavbarActions() {
 
   return (
     <>
-      <Button
-        variant="outline"
-        className="relative h-9 w-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
-        onClick={() => setIsOpen(true)}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
       >
-        <Icons.search className="h-4 w-4 xl:mr-2" aria-hidden="true" />
-        <span className="hidden xl:inline-flex">Search coins...</span>
-        <span className="sr-only">Search coins</span>
-        <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
-          <abbr title={isMacOs() ? "Command" : "Control"}>
-            {isMacOs() ? "⌘" : "Ctrl+"}
-          </abbr>
-          K
-        </kbd>
-      </Button>
+        <Button
+          variant="outline"
+          className="relative h-9 w-9 p-0 xl:h-10 xl:w-60 xl:justify-start xl:px-3 xl:py-2"
+          onClick={() => setIsOpen(true)}
+        >
+          <Icons.search className="h-4 w-4 xl:mr-2" aria-hidden="true" />
+          <span className="hidden xl:inline-flex">Search coins...</span>
+          <span className="sr-only">Search coins</span>
+          <kbd className="pointer-events-none absolute right-1.5 top-2 hidden h-6 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 xl:flex">
+            <abbr title={isMacOs() ? "Command" : "Control"}>
+              {isMacOs() ? "⌘" : "Ctrl+"}
+            </abbr>
+            K
+          </kbd>
+        </Button>
+      </motion.div>
       <CommandDialog position="top" open={isOpen} onOpenChange={setIsOpen}>
         <CommandInput
           placeholder="Search coins..."

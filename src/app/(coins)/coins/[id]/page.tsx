@@ -63,7 +63,7 @@ export default async function CoinPage({
         />
         <div className="flex flex-col gap-8 md:gap-16">
           <CoinHeader coin={coin} />
-          <Tabs defaultValue="overview" className="w-full overflow-x-auto">
+          <Tabs defaultValue="overview">
             <TabsList>
               {tabs.map((tab) => (
                 <TabsTrigger key={tab.title} value={tab.value}>
