@@ -23,7 +23,7 @@ export function formatPrice(
 }
 
 export function formatPercentage(price: number | string) {
-  const roundedNumber =  Math.abs(Number(price)).toFixed(2);
+  const roundedNumber = Math.abs(Number(price)).toFixed(2);
   return roundedNumber + "%";
 }
 
@@ -33,4 +33,19 @@ export function formatDate(date: Date | string) {
 
 export function truncate(str: string, length: number) {
   return str.length > length ? `${str.substring(0, length)}...` : str;
+}
+
+// Test no.2 here
+/**
+ * @param {number[]} prices
+ * @return {number}
+ */
+export function maxProfit(prices: number[]): number {
+  let minPrice = prices[0];
+  let maxProfit = 0;
+  prices.forEach(price => {
+      minPrice = Math.min(minPrice, price);
+      maxProfit = Math.max(maxProfit, price - minPrice);
+  });
+  return maxProfit;
 }
