@@ -3,6 +3,7 @@
 import LineChart from "@/components/chart/line-chart";
 import OhlcChart from "@/components/chart/ohlc-chart";
 import { Icons } from "@/components/icons";
+import ChartLoading from "@/components/loadings/chart-loading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -22,7 +23,7 @@ interface OverviewContentProps {
 export default function OverviewContent({
   coin,
   coinMarketPrices,
-  coinMarketPricesOhlc
+  coinMarketPricesOhlc,
 }: OverviewContentProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -30,7 +31,8 @@ export default function OverviewContent({
   const [isPending, startTransition] = React.useTransition();
 
   // Search params
-  const periodParm = searchParams?.get("period") ?? "1d";
+  const periodParam = searchParams?.get("period") ?? "1d";
+  const chartTypeParam = searchParams?.get("chart") ?? "line";
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -51,7 +53,7 @@ export default function OverviewContent({
   );
 
   // Period filter
-  const [period, setPeriod] = React.useState(periodParm);
+  const [period, setPeriod] = React.useState(periodParam);
 
   React.useEffect(() => {
     startTransition(() => {
@@ -64,6 +66,19 @@ export default function OverviewContent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period]);
 
+  // Chart select
+  const [chartType, setChartType] = React.useState(chartTypeParam);
+  React.useEffect(() => {
+    startTransition(() => {
+      router.push(
+        `${pathname}?${createQueryString({
+          chart: chartType,
+        })}`
+      );
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chartType]);
+
   // Coin market price chart data
   const coinMarketPricesData = coinMarketPrices.map(([timestamp, price]) => ({
     x: dayjs(timestamp).format("D MMM"),
@@ -74,10 +89,12 @@ export default function OverviewContent({
   const prices = coinMarketPricesData.map((entry) => entry.y);
 
   // Coin ohlc chart data
-  const coinMarketPricesOhlcData = coinMarketPricesOhlc.map(([timestamp, open, high, low, close]) => ({
-    x: new Date(timestamp),
-    y: [open, high, low, close],
-  }));
+  const coinMarketPricesOhlcData = coinMarketPricesOhlc.map(
+    ([timestamp, open, high, low, close]) => ({
+      x: new Date(timestamp),
+      y: [open, high, low, close],
+    })
+  );
 
   const tableData = React.useMemo(() => {
     return [
@@ -119,18 +136,24 @@ export default function OverviewContent({
           <h2 className="text-2xl lg:text-xl">{coin.name} Price Chart</h2>
 
           <div>
-            <Tabs defaultValue="line">
+            <Tabs defaultValue={chartType}>
               <TabsList className="flex justify-between">
                 <div>
-                <TabsTrigger value="line">
-                  <Icons.lineChart className="h-4 w-4" />
-                </TabsTrigger>
-                <TabsTrigger value="ohlc">
-                  <Icons.candleStickChart className="h-4 w-4" />
-                </TabsTrigger>
+                  <TabsTrigger
+                    value="line"
+                    onClick={() => setChartType("line")}
+                  >
+                    <Icons.lineChart className="h-4 w-4" />
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="ohlc"
+                    onClick={() => setChartType("ohlc")}
+                  >
+                    <Icons.candleStickChart className="h-4 w-4" />
+                  </TabsTrigger>
                 </div>
                 <div>
-                <Tabs defaultValue={period}>
+                  <Tabs defaultValue={period}>
                     <TabsList>
                       {sortOptions.map((option) => (
                         <TabsTrigger
@@ -143,12 +166,14 @@ export default function OverviewContent({
                         </TabsTrigger>
                       ))}
                     </TabsList>
-            </Tabs>
+                  </Tabs>
                 </div>
-                
               </TabsList>
               <TabsContent value="line">
-              <LineChart
+                {isPending ? (
+                  <ChartLoading />
+                ) : (
+                  <LineChart
                     type="line"
                     data={{
                       labels: timestamps,
@@ -196,34 +221,35 @@ export default function OverviewContent({
                       },
                     }}
                   />
+                )}
               </TabsContent>
               <TabsContent value="ohlc">
-                <OhlcChart
-                  series={[
-                    {
-                      data: coinMarketPricesOhlcData
-                    }
-                  ]}
-                  options={{
-                    chart: {
-                      type: 'candlestick',
-                    },
-                    // title: {
-                    //   text: ""
-                    // },
-                    xaxis: {
-                      type: 'datetime'
-                    },
-                    yaxis: {
-                      tooltip: {
-                        enabled: true
-                      }
-                    }
-                  }}
-                />
+                {isPending ? (
+                  <ChartLoading />
+                ) : (
+                  <OhlcChart
+                    series={[
+                      {
+                        data: coinMarketPricesOhlcData,
+                      },
+                    ]}
+                    options={{
+                      chart: {
+                        type: "candlestick",
+                      },
+                      xaxis: {
+                        type: "datetime",
+                      },
+                      yaxis: {
+                        tooltip: {
+                          enabled: true,
+                        },
+                      },
+                    }}
+                  />
+                )}
               </TabsContent>
             </Tabs>
-            
           </div>
         </div>
       </div>
