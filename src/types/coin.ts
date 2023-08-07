@@ -81,3 +81,11 @@ export type CoinTab = {
   title: string;
   value: "overview" | "market" | "about";
 }
+
+export interface TrendingCoin {
+  id: string;
+  name: string;
+  market_cap_rank: number
+  thumb: string;
+  symbol: string;  
+}

@@ -8,21 +8,40 @@ import { Button } from "@/components/ui/button";
 import {
   CommandDialog,
   CommandEmpty,
+  CommandGroup,
   CommandInput,
+  CommandItem,
   CommandList,
 } from "@/components/ui/command";
 import { useDebounce } from "@/hooks/use-debounce";
 import { cn, isMacOs } from "@/lib/utils";
+import {
+  QuerySearchResult,
+  getSearchCoins,
+  getTrendingCoins,
+} from "@/app/_actions/coin";
+import { TrendingCoin } from "@/types/coin";
+import { Skeleton } from "./ui/skeleton";
+import Image from "next/image";
 
 export default function NavbarActions() {
   const router = useRouter();
   const [isOpen, setIsOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const debouncedQuery = useDebounce(query, 300);
+  const [data, setData] = React.useState<QuerySearchResult | null>(null);
   const [isPending, startTransition] = React.useTransition();
+  const [trendingCoins, setTrendingCoins] = React.useState<TrendingCoin[]>([]);
 
   React.useEffect(() => {
-    // TOOD: Search for coin function here
+    if (debouncedQuery.length === 0) setData(null);
+
+    if (debouncedQuery.length > 0) {
+      startTransition(async () => {
+        const data = await getSearchCoins(debouncedQuery);
+        setData(data);
+      });
+    }
   }, [debouncedQuery]);
 
   React.useEffect(() => {
@@ -46,6 +65,13 @@ export default function NavbarActions() {
       setQuery("");
     }
   }, [isOpen]);
+
+  React.useEffect(() => {
+    (async () => {
+      const coins = await getTrendingCoins();
+      if (coins.length > 0) setTrendingCoins(coins);
+    })();
+  }, []);
 
   return (
     <>
@@ -76,8 +102,60 @@ export default function NavbarActions() {
           >
             No coins found.
           </CommandEmpty>
+          {!query && (
+            <CommandGroup key="trending" heading="Trending Search">
+              {trendingCoins.map((coin) => (
+                <CommandItem
+                  key={coin.id}
+                  onSelect={() =>
+                    handleSelect(() => router.push(`/coins/${coin.id}`))
+                  }
+                  className="flex justify-between cursor-pointer"
+                >
+                  <div className="flex items-center space-x-2">
+                    <div className="relative h-6 w-6">
+                      <Image
+                        fill
+                        src={coin.thumb}
+                        alt={coin.name}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    </div>
+                    <span>{coin.name}</span>
+                    <span className="text-sm">({coin.symbol})</span>
+                  </div>
+                  <div>#{coin.market_cap_rank}</div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )}
 
-          {/* TODO: list coins here */}
+          {isPending ? (
+            <div className="space-y-1 overflow-hidden px-1 py-2">
+              <Skeleton className="h-4 w-10 rounded" />
+              <Skeleton className="h-8 rounded-sm" />
+              <Skeleton className="h-8 rounded-sm" />
+            </div>
+          ) : (
+            data?.map((group) => (
+              <CommandGroup
+                key={group.category}
+                heading={group.category}
+                className="capitalize"
+              >
+                {group[group.category]?.map((item) => (
+                  <CommandItem
+                    key={item.id}
+                    onSelect={() =>
+                      handleSelect(() => router.push(`/coins/${item.id}`))
+                    }
+                  >
+                    {item.name}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ))
+          )}
         </CommandList>
       </CommandDialog>
     </>
