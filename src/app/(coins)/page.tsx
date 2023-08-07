@@ -7,7 +7,7 @@ import { getCoins, getGlobal } from "@/app/_actions/coin";
 import { cn, formatPercentage, formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Rakkar | Coins",
+  title: "Coins",
   description: "Search for your looking coin in the market.",
 };
 
@@ -44,7 +44,9 @@ export default async function CoinsPage({ searchParams }: CoinsPageProps) {
                   "text-destructive": global.market_cap_change_percentage_24h_usd < 0,
                   "text-green": global.market_cap_change_percentage_24h_usd > 0,
                 })}
-                > {formatPercentage(global.market_cap_change_percentage_24h_usd)}</span> increase over the last day
+                > {formatPercentage(global.market_cap_change_percentage_24h_usd)} {
+                  global.market_cap_change_percentage_24h_usd > 0 ? "increase" : "decrease"
+                }</span> over the last day
               </p>
             </>
           }

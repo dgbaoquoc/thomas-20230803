@@ -23,7 +23,7 @@ export function formatPrice(
 }
 
 export function formatPercentage(price: number | string) {
-  const roundedNumber = Number(price).toFixed(2);
+  const roundedNumber =  Math.abs(Number(price)).toFixed(2);
   return roundedNumber + "%";
 }
 

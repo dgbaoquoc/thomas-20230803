@@ -75,12 +75,14 @@ export interface Coin {
     price_change_percentage_200d: number;
     price_change_percentage_1y: number;
   };
+  price_change_percentage_7d: number;
+  price_change_percentage_30d: number;
 }
 
 export type CoinTab = {
   title: string;
   value: "overview" | "market" | "about";
-  disabled: boolean
+  disabled: boolean;
 };
 
 export interface TrendingCoin {

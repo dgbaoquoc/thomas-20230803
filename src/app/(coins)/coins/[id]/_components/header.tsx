@@ -6,9 +6,13 @@ import Image from "next/image";
 
 interface CoinHeaderProps {
   coin: Coin;
+  percentageChange: number;
 }
 
-export default function CoinHeader({ coin }: CoinHeaderProps) {
+export default function CoinHeader({
+  coin,
+  percentageChange,
+}: CoinHeaderProps) {
   return (
     <div className="flex flex-col gap-y-2">
       <div>
@@ -40,20 +44,20 @@ export default function CoinHeader({ coin }: CoinHeaderProps) {
         </h2>
 
         {/* TODO: based on period filter */}
+        {/* getStatisticPercentage */}
         <span
           className={cn("text-base flex gap-x-0 items-center", {
-            "text-green": coin.market_data.price_change_percentage_24h > 0,
-            "text-destructive":
-              coin.market_data.price_change_percentage_24h < 0,
+            "text-green": percentageChange > 0,
+            "text-destructive": percentageChange < 0,
           })}
         >
-          {coin.market_data.price_change_percentage_24h < 0 ? (
+          {percentageChange < 0 ? (
             <Icons.chevronDown className="h-4 w-4" />
           ) : (
             <Icons.chevronUp className="h-4 w-4" />
           )}
 
-          {formatPercentage(coin.market_data.price_change_percentage_24h)}
+          {formatPercentage(percentageChange)}
         </span>
       </div>
     </div>

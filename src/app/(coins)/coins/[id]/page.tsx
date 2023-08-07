@@ -13,19 +13,14 @@ import {
 } from "@/components/ui/accordion";
 import Container from "@/components/ui/container";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { type Metadata } from "next";
+import { ResolvingMetadata, type Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { LoremIpsum, loremIpsum } from "lorem-ipsum";
 import { tabs } from "@/constants";
+import { LoremIpsum } from "lorem-ipsum";
 import CoinHeader from "./_components/header";
 import OverviewContent from "./_components/overview-content";
-
-// TODO: change to dynamic
-export const metadata: Metadata = {
-  title: "Coin",
-  description: "Coin description ...",
-};
+import { Coin } from "@/types/coin";
 
 interface CoinPageProps {
   params: {
@@ -33,6 +28,21 @@ interface CoinPageProps {
   };
   searchParams: {
     [key: string]: string | string[] | undefined;
+  };
+}
+
+export async function generateMetadata(
+  { params, searchParams }: CoinPageProps,
+  parent?: ResolvingMetadata
+): Promise<Metadata> {
+  const coin = await getCoin(params.id);
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent)?.openGraph?.images || [];
+
+  return {
+    title: `${coin?.name} | Information`,
+    description: `Get information about ${coin?.name} today`,
   };
 }
 
@@ -58,6 +68,22 @@ export default async function CoinPage({
     days,
   });
 
+  let key = "price_change_percentage_24h";
+  switch (period) {
+    case "7d":
+      key = "price_change_percentage_7d";
+      break;
+    case "30d":
+      key = "price_change_percentage_30d";
+      break;
+    default:
+      break;
+  }
+
+  const percentageChange = Number(
+    coin.market_data[key as keyof Coin["market_data"]]
+  );
+
   return (
     <Shell>
       <Container>
@@ -73,7 +99,7 @@ export default async function CoinPage({
           ]}
         />
         <div className="flex flex-col gap-4 md:gap-8">
-          <CoinHeader coin={coin} />
+          <CoinHeader coin={coin} percentageChange={percentageChange} />
           <Tabs defaultValue="overview">
             <TabsList className="inline-flex h-9 items-center w-full justify-start rounded-none border-b bg-transparent p-0">
               {tabs.map((tab) => (
@@ -92,6 +118,7 @@ export default async function CoinPage({
                 coin={coin}
                 coinMarketPrices={coinMarketPrices ?? []}
                 coinMarketPricesOhlc={coinMarketPricesOhlc ?? []}
+                percentageChange={percentageChange}
               />
             </TabsContent>
             <TabsContent value="market">Market</TabsContent>

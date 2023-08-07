@@ -18,12 +18,14 @@ interface OverviewContentProps {
   coin: Coin;
   coinMarketPrices: Array<number[]>;
   coinMarketPricesOhlc: Array<number[]>;
+  percentageChange: number;
 }
 
 export default function OverviewContent({
   coin,
   coinMarketPrices,
   coinMarketPricesOhlc,
+  percentageChange,
 }: OverviewContentProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -133,7 +135,9 @@ export default function OverviewContent({
     <div className="grid grid-cols-1 gap-y-4 lg:grid-cols-3 lg:gap-8">
       <div className="col-span-2">
         <div className="flex flex-col gap-y-2 lg:gap-y-4">
-          <h2 className="font-semibold text-2xl lg:text-xl">{coin.name} Price Chart</h2>
+          <h2 className="font-semibold text-2xl lg:text-xl">
+            {coin.name} Price Chart
+          </h2>
           <div>
             <Tabs defaultValue={chartType}>
               <TabsList className="flex justify-between">
@@ -181,10 +185,7 @@ export default function OverviewContent({
                           label: "Price",
                           data: prices,
                           fill: false,
-                          borderColor:
-                            coin.market_data.price_change_percentage_24h < 0
-                              ? "red"
-                              : "green",
+                          borderColor: percentageChange < 0 ? "red" : "green",
                           pointRadius: 0,
                         },
                       ],
