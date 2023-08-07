@@ -61,12 +61,19 @@ export default async function CoinPage({
             },
           ]}
         />
-        <div className="flex flex-col gap-8 md:gap-16">
+        <div className="flex flex-col gap-4 md:gap-8">
           <CoinHeader coin={coin} />
-          <Tabs defaultValue="overview">
-            <TabsList>
+          <Tabs defaultValue="overview"
+          >
+            <TabsList
+                      className="inline-flex h-9 items-center w-full justify-start rounded-none border-b bg-transparent p-0"
+            >
               {tabs.map((tab) => (
-                <TabsTrigger key={tab.title} value={tab.value}>
+                <TabsTrigger
+                key={tab.title} value={tab.value}
+                disabled={tab.disabled}
+                className="data-[state=active]:bg-gray-100 data-[state=active]:text-foreground data-[state=active]:font-semibold"
+                >
                   {tab.title}
                 </TabsTrigger>
               ))}

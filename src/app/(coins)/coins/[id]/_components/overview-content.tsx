@@ -130,11 +130,10 @@ export default function OverviewContent({
   }, [coin]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="grid grid-cols-1 gap-y-4 lg:grid-cols-3 lg:gap-8">
       <div className="col-span-2">
         <div className="flex flex-col gap-y-2 lg:gap-y-4">
-          <h2 className="text-2xl lg:text-xl">{coin.name} Price Chart</h2>
-
+          <h2 className="font-semibold text-2xl lg:text-xl">{coin.name} Price Chart</h2>
           <div>
             <Tabs defaultValue={chartType}>
               <TabsList className="flex justify-between">
@@ -259,7 +258,7 @@ export default function OverviewContent({
           <CardHeader>
             <CardTitle>{coin.name} Price Statistics</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-2 pt-0">
             <Table>
               <TableBody>
                 {tableData.map((row, index) => (

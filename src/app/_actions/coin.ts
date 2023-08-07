@@ -2,10 +2,18 @@ import {
   getCoinsSchema,
   getCoinMarketChartSchema,
 } from "@/lib/validations/coin";
-import { Coin, TrendingCoin } from "@/types/coin";
+import { type Coin, GlobalData, TrendingCoin } from "@/types/coin";
 import { z } from "zod";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+export async function getGlobal() {
+  const response = await fetch(`${apiUrl}/global`);
+  const result = await response.json();
+
+  return  result.data as GlobalData;
+}
+
 export async function getCoins(input: z.infer<typeof getCoinsSchema>) {
   const { page, per_page, order = "market_cap_desc" } = input;
 

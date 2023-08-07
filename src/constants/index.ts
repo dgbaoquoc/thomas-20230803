@@ -4,14 +4,17 @@ export const tabs: CoinTab[] = [
   {
     title: "Overview",
     value: "overview",
+    disabled: false
   },
   {
-    title: "Market",
+    title: "Market (coming soon...)",
     value: "market",
+    disabled: true
   },
   {
     title: "About",
     value: "about",
+    disabled: false
   },
 ];
 

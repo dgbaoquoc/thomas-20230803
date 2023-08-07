@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
-  description?: string | null;
+  description?: React.ReactNode;
   size?: "default" | "sm";
 }
 
@@ -23,16 +23,7 @@ export function Header({
       >
         {title}
       </h1>
-      {description ? (
-        <p
-          className={cn(
-            "line-clamp-2 text-muted-foreground",
-            size === "default" && "text-lg"
-          )}
-        >
-          {description}
-        </p>
-      ) : null}
+      {description && description}
     </div>
   );
 }

@@ -43,29 +43,29 @@ export interface Coin {
       usd: number;
     };
     low_24h: {
-      usd: number
+      usd: number;
     };
     high_24h: {
-      usd: number
+      usd: number;
     };
     low_7d: {
-      usd: number
+      usd: number;
     };
     high_7d: {
-      usd: number
+      usd: number;
     };
     ath: {
       usd: number;
-    }
+    };
     ath_date: {
-      usd: string
-    }
+      usd: string;
+    };
     atl: {
       usd: number;
-    }
+    };
     atl_string: {
-      usd: Date
-    }
+      usd: Date;
+    };
     price_change_24h: number;
     price_change_percentage_24h: number;
     price_change_percentage_7d: number;
@@ -80,12 +80,25 @@ export interface Coin {
 export type CoinTab = {
   title: string;
   value: "overview" | "market" | "about";
-}
+  disabled: boolean
+};
 
 export interface TrendingCoin {
   id: string;
   name: string;
-  market_cap_rank: number
+  market_cap_rank: number;
   thumb: string;
-  symbol: string;  
+  symbol: string;
+}
+
+export interface GlobalData {
+  active_cryptocurrencies: number;
+  markets: number;
+  total_market_cap: {
+    usd: number;
+  };
+  total_volume: {
+    usd: number;
+  };
+  market_cap_change_percentage_24h_usd: number;
 }
