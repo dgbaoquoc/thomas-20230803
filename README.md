@@ -15,6 +15,10 @@ This project utilizes a variety of technologies to deliver a seamless user exper
 - **Styling:** [Tailwind CSS](https://tailwindcss.com)
 - **UI Components:** [shadcn/ui](https://ui.shadcn.com)
 
+## Data Source
+
+This project fetches cryptocurrency data from the CoinGecko API. For detailed information on how to use the API, refer to the [CoinGecko API Documentation](https://www.coingecko.com/en/api/documentation).
+
 ## Features
 
 - **Coin List:** View a list of cryptocurrencies with pagination.
