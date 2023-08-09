@@ -57,11 +57,15 @@ export default async function CoinPage({
   const coinMarketPrices = await getCoinMarketChart({
     id: coin.id,
     days,
+    vs_currency: "usd",
+    precision: "2"
   });
 
   const coinMarketPricesOhlc = await getCoinMartChartOhlc({
     id: coin.id,
     days,
+    vs_currency: "usd",
+    precision: "2"
   });
 
   let key = "price_change_percentage_24h";
@@ -122,7 +126,7 @@ export default async function CoinPage({
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
                   <AccordionTrigger>
-                    What is {coin.name} ({coin.symbol})?
+                    What is {coin.name} ({coin.symbol.toUpperCase()})?
                   </AccordionTrigger>
                   <AccordionContent>
                     {new LoremIpsum().generateParagraphs(1)}

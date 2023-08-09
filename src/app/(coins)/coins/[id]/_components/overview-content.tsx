@@ -126,7 +126,7 @@ export default function OverviewContent({
       {
         cell: "All-Time Low",
         value: formatPrice(coin.market_data.atl.usd),
-        subValue: formatDate(coin.market_data.ath_date.usd),
+        subValue: formatDate(coin.market_data.atl_date.usd),
       },
     ];
   }, [coin]);

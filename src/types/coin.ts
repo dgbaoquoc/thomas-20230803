@@ -66,6 +66,9 @@ export interface Coin {
     atl_string: {
       usd: Date;
     };
+    atl_date: {
+      usd: string;
+    };
     price_change_24h: number;
     price_change_percentage_24h: number;
     price_change_percentage_7d: number;

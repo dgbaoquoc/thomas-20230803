@@ -6,6 +6,8 @@ import { type Metadata } from "next";
 import { getCoins, getGlobal } from "@/app/_actions/coin";
 import { cn, formatPercentage, formatPrice } from "@/lib/utils";
 
+export const dynamic = 'force-dynamic'; // SSR
+
 export const metadata: Metadata = {
   title: "Coins",
   description: "Search for your looking coin in the market.",
@@ -25,6 +27,12 @@ export default async function CoinsPage({ searchParams }: CoinsPageProps) {
   const { total, coins } = await getCoins({
     per_page: limit,
     page: typeof page === "string" ? Number(page) : 1,
+        order : "market_cap_desc",
+      vs_currency : "usd",
+      locale : "en",
+      sparkline : true,
+      price_change_percentage : "1h,24h,7d",
+      precision : "2",
   });
   const pageCount = Math.ceil(total / limit);
 
