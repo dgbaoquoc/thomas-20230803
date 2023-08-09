@@ -19,12 +19,13 @@ This project utilizes a variety of technologies to deliver a seamless user exper
 
 This project fetches cryptocurrency data from the CoinGecko API. For detailed information on how to use the API, refer to the [CoinGecko API Documentation](https://www.coingecko.com/en/api/documentation).
 
-## Features
+## Features to be implemented
 
-- **Coin List:** View a list of cryptocurrencies with pagination.
-- **Coin Details:** Get detailed information about a specific cryptocurrency.
-- **Coin Searching:** Explore coin including trending coins, categories.
-- **Chart Viewing:** Explore coin price chart (line chart / ohlc chart).
+- [x] **Coin List:** View a list of cryptocurrencies with pagination.
+- [x] **Coin Details:** Get detailed information about a specific cryptocurrency.
+- [x] **Coin Searching:** Explore coin including trending coins, categories.
+- [x] **Chart Viewing:** Explore coin price chart (line chart / ohlc chart).
+- [ ] **Coin favorite:** Add favorite & another page for display favored coins.
 
 ## Running Locally
 
